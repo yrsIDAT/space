@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>EarthNetic</title>
+<link rel="stylesheet" type="text/css" href="../style.css">
+<link rel="stylesheet" type="text/css" href="../fonts/stylesheet.css">
+
+<script src="workerSocket.js"></script>
+<link rel="stylesheet" type="text/css" href="knctModal.css">
+<style type="text/css">
+body {
+	font-family: "OpenSansRegular", sans-serif;
+	margin: 0;
+	background-image:url(earthnetic/assets/back.jpg);
+	background-size:105%;
+	background-color:#000;
+	-webkit-animation: background 60s infinite;
+}
+</style>
+<script src="kinect.js"></script>
+<script src="Three.js"></script>
+<script src="controls.js"></script>
+<script src="jquery-1.7.2.min.js"></script>
+<script src="rotate_control.js"></script>
+<!--
+<script src="processing-1.4.0.js"></script>
+
+<script type="text/processing" data-processing-target="earthcanvas">
+PImage img;
+void setup() {
+  size(1008, 750, P3D); 
+  img = loadImage("assets/test.png");
+}
+void draw() {
+  background(0, 0);
+  stroke(255, 50);
+  translate(500, 380, 0);
+  rotateX(mouseY * -0.005);
+  rotateY(mouseX * -0.005);
+  fill( 2, 0, 1000);
+  texture (img);
+vertex(10, 20, 0, 0);
+vertex(80, 5, 100, 0);
+vertex(95, 90, 100, 256);
+vertex(40, 95, 0, 256);
+  sphereDetail(25);
+  sphere(280);
+  
+  
+}
+
+</script>
+-->
+<script src="api.js"></script>
+<script>
+  function initialize() {
+    var earth = new WebGLEarth('earth_div', { zoom: 2, proxyHost: 'http://data.webglearth.com/cgi-bin/corsproxy.fcgi?url=' });
+    var customTMS = earth.initMap(WebGLEarth.Maps.CUSTOM, ['TMS','http://data.webglearth.com/natural-earth-color/{z}/{x}/{y}.jpg',1,5,256,true]);
+    // name, url, minZoom, maxZoom, tileSize, flip-y-axis
+    earth.setBaseMap(customTMS);
+  }
+</script>
+
+<script type="text/javascript">
+		/******************************
+		* #### CUSTOM KINECTJS CODE
+		*
+		* If you wish to inspect the controls, please see
+		* the controls.js / rotate_control.js
+		*******************************/
+		document.addEventListener( 'DOMContentLoaded', function() {	//on dom load
+			kinect
+				.sessionPersist()	//maintain session in the same domain
+				.modal.make( '../../../knctModal.css' )		//kickstart the modal						
+				.notif.make();		//kickstart the notifications
+		}, false);
+		
+		//adding notifications on connection status
+		kinect.addEventListener('openedSocket', function() { this.notif.push( "CONNECTED" ); });
+		kinect.addEventListener('closedSocket', function() { this.notif.push( "DISCONNECTED" ) });
+		
+		//adding notifications on player detection/loss
+		kinect.addEventListener('playerFound', function( count ) { this.notif.push( "PLAYER FOUND. Total : " + count[ 0 ] ) });
+		kinect.addEventListener('playerLost', function( count ) { this.notif.push( "PLAYER LOST. Total : " + count[ 0 ] ) });
+		
+		//show "escape..." notification
+		kinect.addEventListener( 'gestureEscape', function( args ) {
+			if( args[ 1 ] === true )
+				kinect.notif.push( "ESCAPE..." );
+			return false;
+		})
+		//go back after staying in the 'escape' position
+		.addEventListener( 'escapeInterval', function( args ) {
+			history.back();
+		});
+		
+		//setting up the tracking options (called once per pageload)
+		kinect.setUp({
+			players  	: 1,
+			relative 	: true,
+			meters	 	: false,
+			sensitivity	: 1.2,						
+			joints	 	: [ 'HAND_RIGHT', 'HEAD', 'HAND_LEFT', 'HANDS_DIST' ],
+			gestures 	: [ 'HANDS_DIST', "BODY_ANGLE", 'ESCAPE' ]
+		});
+	</script>
+	
+</head>
+
+
+<body onload="initialize()">
+
+
+<div id="head">
+<div id="headwrap">
+<a href="file:///C|/Users/Daniel/SkyDrive/YRS"> 
+<div id="logoborder"><div id="headlogo"> </div></div> </a>
+<div id="controls">
+			<a href="#" id="getAngle"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </a> 
+			<a href="#" id="resetAngle"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </a> 
+			<input id="deg" type="text" value="10" />
+			<a href="#" id="setAngle">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+		</div>
+</div> </div>
+
+<center>
+  <div id="earth_div" style="width:100%;height:100%;"></div> 
+<!--<canvas id="earthcanvas"></canvas>-->
+</center>
+
+
+<!--
+<div id="infopoint" class="infopoint">
+<div class="infobox">
+<p class="title"> Ipsum </p>
+<p class="info">chbksdhkvsdg ghr  hgikrvnhsui tuirthuisrh dguirhuig hzxdui ghuihz guiohgsgdieghxdk hg 9oe glseosd golhdfigh iktwp0hdikgthzdfoghhgdub  </p>
+</div>
+<div id="samplepoint" class="point">
+</div>
+</div>
+-->
+
+
+    
+</body>
+</html>
